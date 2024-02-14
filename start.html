@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Signal Recognition</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>Hand Signal Recognition</h1>
+        <nav>
+            <a href="start.html">Home</a>
+            <a href="video.html">Video Gallery</a>
+        </nav>
+    </header>
+    
+    <section>
+        <div class="video-container" id="videoContainer">
+            <video id="cameraFeed" autoplay playsinline></video>
+        </div>
+    </section>
+
+    <button class="start-button" onclick="toggleCamera()">Start Recognition</button>
+
+    <script>
+        let videoStream;
+
+        async function toggleCamera() {
+            var button = document.querySelector('.start-button');
+            var videoContainer = document.getElementById('videoContainer');
+            var cameraFeed = document.getElementById('cameraFeed');
+
+            if (button.innerHTML === 'Start Recognition') {
+                try {
+                    videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    cameraFeed.srcObject = videoStream;
+                    videoContainer.style.display = 'block';
+                    button.innerHTML = 'Stop Recognition';
+                } catch (error) {
+                    console.error('Error accessing camera:', error);
+                    alert('Failed to access the camera. Please check your permissions.');
+                }
+            } else {
+                if (videoStream) {
+                    const tracks = videoStream.getTracks();
+                    tracks.forEach(track => track.stop());
+                }
+                videoContainer.style.display = 'none';
+                button.innerHTML = 'Start Recognition';
+            }
+        }
+    </script>
+    <h3 id="predictionText">Prediction: <span id="userInput"></span></h3>
+        
+    <section>
+        <h2>Instructions:</h2>
+        <p class="instructions">Hold your hand in front of the camera to recognize hand signals.</p>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Your Hand Signal Recognition App. All rights reserved.</p>
+    </footer>
+</body>
+</html>
